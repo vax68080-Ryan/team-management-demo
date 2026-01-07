@@ -1,0 +1,25 @@
+<div class="card">
+  <h3>用戶資訊卡</h3>
+
+  <p>
+    姓名：
+    <strong
+      [innerHTML]="userName | highlight : ((highlightField === 'all' || highlightField === 'name') ? highlightTerm : '')"
+    ></strong>
+  </p>
+
+  <p>
+    加入日期：
+    <span
+      [innerHTML]="joinDate | highlight : ((highlightField === 'all' || highlightField === 'date') ? highlightTerm : '')"
+    ></span>
+  </p>
+
+  <!-- ✅ 不要 userName = '...' 直接改 Input -->
+  <button (click)="onUpgrade()">點我升級</button>
+
+  <div class="button-group" style="margin-top: 15px">
+    <button (click)="onEdit()" style="background: orange">編輯</button>
+    <button (click)="onDelete()" style="background: red">刪除</button>
+  </div>
+</div>

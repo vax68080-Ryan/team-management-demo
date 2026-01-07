@@ -1,0 +1,21 @@
+.card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  width: 250px;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  font-family: sans-serif;
+  margin: 20px auto;
+}
+
+button {
+  background: white;
+  color: #6e8efb;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}

@@ -1,0 +1,206 @@
+<div style="text-align: center; padding: 20px">
+  <h1>{{ title }}</h1>
+
+  <!-- 新增 -->
+  <div
+    style="
+      margin: 20px auto;
+      max-width: 520px;
+      padding: 20px;
+      border: 1px dashed #7e57c2;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    "
+  >
+    <h3 style="color: #7e57c2">✨ 新增小組成員</h3>
+
+    <input
+      [(ngModel)]="newMemberName"
+      placeholder="請輸入姓名"
+      style="padding: 10px; border-radius: 5px; border: 1px solid #ddd; width: 200px"
+    />
+
+    <button
+      (click)="addMember()"
+      style="
+        padding: 10px 20px;
+        background-color: #7e57c2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin-left: 10px;
+        cursor: pointer;
+      "
+    >
+      加入團隊
+    </button>
+  </div>
+
+  <!-- 搜尋/排序/分頁 -->
+  <div
+    style="
+      margin: 0 auto 20px;
+      max-width: 900px;
+      padding: 16px;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      background: #fff;
+    "
+  >
+    <div
+      style="
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        align-items: center;
+      "
+    >
+      <div style="position: relative; display: inline-block">
+        <input
+          #searchInput
+          [ngModel]="highlightTerm"
+          (ngModelChange)="onSearchInput($event)"
+          (keydown.enter)="onEnterSearch()"
+          (keydown.escape)="onEscClear()"
+          placeholder="🔎 搜尋（Enter 立即搜尋 / Esc 清除）"
+          style="
+            padding: 10px 34px 10px 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 300px;
+            box-sizing: border-box;
+          "
+        />
+
+        <button
+          *ngIf="hasSearch"
+          (click)="clearSearch()"
+          type="button"
+          aria-label="清除搜尋"
+          style="
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            color: #666;
+            padding: 0;
+          "
+        >
+          ×
+        </button>
+      </div>
+
+      <select
+        [ngModel]="searchField"
+        (ngModelChange)="setSearchField($event)"
+        style="padding: 10px; border-radius: 8px; border: 1px solid #ddd"
+      >
+        <option value="all">搜尋：全部</option>
+        <option value="name">搜尋：姓名</option>
+        <option value="date">搜尋：月份</option>
+      </select>
+
+      <select
+        [ngModel]="sortMode"
+        (ngModelChange)="setSortMode($event)"
+        style="padding: 10px; border-radius: 8px; border: 1px solid #ddd"
+      >
+        <option value="newest">排序：新到舊</option>
+        <option value="oldest">排序：舊到新</option>
+        <option value="nameAsc">排序：名字 A→Z</option>
+      </select>
+
+      <select
+        [ngModel]="pageSize"
+        (ngModelChange)="setPageSize(+$event)"
+        style="padding: 10px; border-radius: 8px; border: 1px solid #ddd"
+      >
+        <option [value]="4">每頁 4</option>
+        <option [value]="8">每頁 8</option>
+        <option [value]="12">每頁 12</option>
+      </select>
+
+      <button
+        *ngIf="hasSearch"
+        (click)="clearSearch()"
+        style="
+          padding: 10px 14px;
+          border-radius: 8px;
+          border: 1px solid #ddd;
+          background: #fafafa;
+          cursor: pointer;
+        "
+      >
+        清除
+      </button>
+    </div>
+
+    <div
+      *ngIf="!loading && (total ?? 0) > 0 && (teamMembers?.length ?? 0) === 0"
+      style="margin-top: 10px; text-align: center; color: #999"
+    >
+      找不到符合的成員
+    </div>
+
+    <div *ngIf="errorMsg" style="margin-top: 8px; color: #b00020; text-align: center">
+      {{ errorMsg }}
+    </div>
+
+    <div
+      style="
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        align-items: center;
+      "
+    >
+      <button
+        (click)="goPrev()"
+        [disabled]="page <= 1"
+        style="padding: 6px 10px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer"
+      >
+        ◀ 上一頁
+      </button>
+
+      <div>第 {{ page }} 頁 / 共 {{ maxPage }} 頁</div>
+
+      <button
+        (click)="goNext()"
+        [disabled]="page >= maxPage"
+        style="padding: 6px 10px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer"
+      >
+        下一頁 ▶
+      </button>
+    </div>
+
+    <div
+      *ngIf="!loading && total > 0 && teamMembers.length === 0"
+      style="margin-top: 10px; text-align: center; color: #999"
+    >
+      找不到符合的成員
+    </div>
+  </div>
+
+  <!-- 列表 -->
+  <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; padding: 20px">
+    <app-user-profile
+      *ngFor="let member of teamMembers"
+      [id]="member.id"
+      [userName]="member.name"
+      [joinDate]="member.date"
+      [highlightTerm]="highlightTerm"
+      [highlightField]="searchField"
+      (delete)="deleteMember($event)"
+      (edit)="editMember($event)"
+      (upgrade)="upgradeMember($event)"
+    >
+    </app-user-profile>
+  </div>
+</div>
