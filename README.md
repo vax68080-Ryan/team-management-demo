@@ -1,3 +1,6 @@
+> 本專案為一個示範型全端專案，重點在於前後端資料流設計、
+> REST API 規劃、搜尋/分頁邏輯，以及 Angular 狀態同步處理。
+
 # Team Management Demo (Angular + Spring Boot)
 
 一個全端小型專案：前端使用 **Angular**，後端使用 **Spring Boot REST API**，資料使用 **H2（File Mode）** 持久化。  
