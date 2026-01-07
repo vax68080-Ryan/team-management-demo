@@ -34,3 +34,11 @@
 ---
 
 ## 🗂 Project Structure（專案結構）
+
+## 🔄 Data Flow（前後端資料流）
+
+1. Angular 透過 HttpClient 呼叫 `/api/members`
+2. 搜尋、排序、分頁條件以 query params 傳遞
+3. Spring Boot Controller 依條件組合 JPA 查詢
+4. 回傳 `{ items, total }` 結構
+5. 前端更新列表與分頁狀態
