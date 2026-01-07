@@ -42,3 +42,6 @@
 3. Spring Boot Controller 依條件組合 JPA 查詢
 4. 回傳 `{ items, total }` 結構
 5. 前端更新列表與分頁狀態
+
+- 為避免大量資料一次載入，搜尋與分頁優先由後端處理（server-side）。
+- 前端保留 fallback 機制，當 API 不支援搜尋時仍可於前端過濾。
